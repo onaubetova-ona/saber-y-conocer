@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="tool">
+  <meta name="design-style" content="terracotta">
+  <title>Saber y conocer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* 1. Terracotta style tokens */
+      --background: #f9f3eb;
+      --surface-container-low: #f3e9dc;
+      --surface-container: #ede0d0;
+      --surface-container-high: #e4d4c0;
+      --surface-card: #fcf8f2;
+
+      --on-surface: #261b15;
+      --on-surface-variant: #57483f;
+
+      --outline: #9e8a78;
+      --outline-variant: #dfd0be;
+
+      --primary: #b84a24;
+      --on-primary: #ffffff;
+      --primary-hover: #9f3d1b;
+      --primary-container: #f7ebe0;
+      --on-primary-container: #7d2e12;
+      --primary-border: #c98a6b;
+
+      --secondary: #8f6524;
+      --secondary-button-border: #c4b29e;
+
+      --tertiary: #1d6356;
+      --on-tertiary: #ffffff;
+      --tertiary-container: #e1efe9;
+      --on-tertiary-container: #13473d;
+      --tertiary-border: #b5d6c9;
+
+      --error: #b82929;
+      --on-error: #ffffff;
+      --error-container: #fae8e8;
+      --on-error-container: #8c1d1d;
+      --error-border: #e3b3b3;
+
+      --data-1: #b84a24;
+      --data-2: #1d6356;
+      --data-3: #b5893e;
+      --data-4: #8c3838;
+      --data-context: #a39384;
+
+      --font-headline: 'Cormorant Garamond', serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-label: 'Plus Jakarta Sans', sans-serif;
+
+      --rounded: 0.375rem;
+      --rounded-lg: 0.75rem;
+      --rounded-arch: 28px 28px 6px 6px;
+      --rounded-full: 9999px;
+
+      --soft-shadow: 0 4px 18px rgb(38 27 21 / 0.04);
+      --soft-shadow-raised: 0 8px 28px rgb(38 27 21 / 0.07);
+      --warm-hairline: 1px solid var(--outline-variant);
+      --brass-gradient: linear-gradient(90deg, #d8c3b0, #b5893e, #d8c3b0);
+
+      /* 3. Shared tokens */
+      --positive: var(--tertiary);
+      --warning: var(--secondary);
+      --focus: var(--primary);
+
+      /* Type scale (Focused Tool, with Cormorant stepped up for display legibility) */
+      --display-size: clamp(2.125rem, 1.5rem + 2.1vw, 3.125rem);
+      --headline-size: clamp(1.5rem, 1.25rem + 0.8vw, 1.875rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Spacing scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    header { position: static !important; }
+    button { font-family: inherit; }
+
+    .page-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-lg);
+      padding: var(--space-xl) var(--space-lg) var(--space-2xl);
+      max-width: 920px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Hero Header */
+    .hero-header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      padding-bottom: var(--space-xs);
+    }
+    .kicker {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin: 0;
+    }
+    .title {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: var(--display-size);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .title em {
+      font-style: italic;
+      color: var(--primary);
+    }
+    .subtitle {
+      font-size: var(--subhead-size);
+      color: var(--on-surface-variant);
+      margin: var(--space-xs) 0 0;
+      max-width: 60ch;
+    }
+
+    /* Arch Summary Cards */
+    .summary-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-md);
+    }
+    .arch-card {
+      background: var(--surface-container-low);
+      border: var(--warm-hairline);
+      border-radius: var(--rounded-arch);
+      padding: var(--space-lg) var(--space-md) var(--space-md);
+      text-align: center;
+      box-shadow: var(--soft-shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+    }
+    .arch-card.is-featured {
+      background: var(--primary-container);
+      border-color: var(--primary-border);
+    }
+    .arch-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+    .arch-value {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: clamp(2rem, 1.6rem + 1.2vw, 2.625rem);
+      line-height: 1.05;
+      color: var(--on-surface);
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    .arch-caption {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      color: var(--tertiary);
+    }
+
+    /* Toolbar with progress bar and reset */
+    .control-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+      background: var(--surface-container-low);
+      border: var(--warm-hairline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-sm) var(--space-md);
+    }
+    .progress-wrap {
+      flex: 1 1 240px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--space-sm);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      color: var(--on-surface-variant);
+    }
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: var(--surface-container-high);
+      border-radius: var(--rounded-full);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--tertiary);
+      border-radius: var(--rounded-full);
+      transition: width var(--dur-short) var(--ease-out);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: var(--rounded-full);
+      font-family: var(--font-label);
+      font-size: var(--body-size);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-in-out),
+                  color var(--dur-micro) var(--ease-in-out),
+                  box-shadow var(--dur-micro) var(--ease-in-out),
+                  transform var(--dur-micro) var(--ease-out);
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+      border: 1px solid var(--primary);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--on-surface);
+      border: 1px solid var(--secondary-button-border);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-container);
+    }
+    .btn:active {
+      transform: translateY(1px);
+    }
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Brass diamond divider */
+    .ornament-rule {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-block: var(--space-xs);
+      color: var(--secondary);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .ornament-rule::before,
+    .ornament-rule::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--brass-gradient);
+    }
+
+    /* Exercise Section */
+    .part-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .part-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+      padding-bottom: var(--space-xs);
+      border-bottom: var(--warm-hairline);
+    }
+    .part-title {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: var(--headline-size);
+      line-height: 1.15;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .badge-emerald {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      background: var(--tertiary-container);
+      color: var(--on-tertiary-container);
+      border: 1px solid var(--tertiary-border);
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--rounded-full);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Question Cards */
+    .items-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .item-wrapper {
+      container-type: inline-size;
+    }
+    .question-card {
+      background: var(--surface-card);
+      border: var(--warm-hairline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      box-shadow: var(--soft-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      transition: box-shadow var(--dur-short) var(--ease-out),
+                  background-color var(--dur-short) var(--ease-in-out);
+    }
+    .question-card.is-correct {
+      background: var(--tertiary-container);
+      box-shadow: 0 0 0 1px var(--tertiary-border), var(--soft-shadow);
+    }
+    .question-card.is-incorrect {
+      background: var(--error-container);
+      box-shadow: 0 0 0 1px var(--error-border), var(--soft-shadow);
+    }
+
+    .question-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+    .question-prompt {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-sm);
+      font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+      font-weight: 500;
+      line-height: 1.5;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .item-number {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--primary);
+      min-width: 1.5rem;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    .blank-slot {
+      display: inline-block;
+      min-width: 5.25rem;
+      padding: 0 var(--space-xs);
+      text-align: center;
+      font-weight: 700;
+      border-bottom: 2px solid var(--outline);
+      color: var(--on-surface-variant);
+      transition: color var(--dur-micro) var(--ease-in-out),
+                  border-color var(--dur-micro) var(--ease-in-out);
+    }
+    .blank-slot.filled-correct {
+      color: var(--on-tertiary-container);
+      border-color: var(--tertiary);
+    }
+    .blank-slot.filled-incorrect {
+      color: var(--on-error-container);
+      border-color: var(--error);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded-full);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .status-pill.is-hidden {
+      visibility: hidden;
+    }
+    .status-pill.is-correct {
+      background: var(--tertiary);
+      color: var(--on-tertiary);
+    }
+    .status-pill.is-incorrect {
+      background: var(--error);
+      color: var(--on-error);
+    }
+
+    /* Options Grid */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-sm);
+    }
+    .option-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      font-size: var(--body-size);
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: background-color var(--dur-micro) var(--ease-in-out),
+                  color var(--dur-micro) var(--ease-in-out),
+                  box-shadow var(--dur-micro) var(--ease-in-out),
+                  transform var(--dur-micro) var(--ease-out);
+    }
+    .option-btn:hover {
+      background: var(--surface-container);
+      box-shadow: 0 0 0 1px var(--outline);
+    }
+    .option-btn:active {
+      transform: translateY(1px);
+    }
+    .option-btn.selected-correct {
+      background: var(--tertiary);
+      color: var(--on-tertiary);
+      border-color: var(--tertiary);
+      box-shadow: 0 0 0 1px var(--tertiary);
+    }
+    .option-btn.selected-incorrect {
+      background: var(--error);
+      color: var(--on-error);
+      border-color: var(--error);
+      box-shadow: 0 0 0 1px var(--error);
+    }
+
+    @container (max-width: 520px) {
+      .options-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .question-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-sm);
+      }
+      .status-pill.is-hidden {
+        display: none;
+      }
+    }
+
+    /* Bottom Footer Summary */
+    .bottom-summary {
+      background: var(--surface-container);
+      border: var(--warm-hairline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+    }
+    .bottom-summary-text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .bottom-summary-title {
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 600;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .bottom-summary-sub {
+      font-size: var(--body-size);
+      color: var(--on-surface-variant);
+      margin: 0;
+    }
+
+    /* Accessibility Focus Ring */
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Responsive Page Rules */
+    @media (max-width: 640px) {
+      .page-grid {
+        padding: var(--space-lg) var(--space-md) var(--space-xl);
+        gap: var(--space-md);
+      }
+      .stats-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .question-card {
+        padding: var(--space-md);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-grid">
+    <header class="hero-header">
+      <p class="kicker">Práctica interactiva</p>
+      <h1 class="title">Saber y <em>conocer</em></h1>
+      <p class="subtitle">Selecciona una opción en cada oración para validar tu respuesta.</p>
+    </header>
+
+    <section class="summary-section" aria-label="Resumen de puntuación">
+      <div class="stats-grid">
+        <div class="arch-card is-featured">
+          <span class="arch-label">Puntuación</span>
+          <span class="arch-value" id="total-score" aria-live="polite">0 / 16</span>
+          <span class="arch-caption" id="total-percent">0 % de aciertos</span>
+        </div>
+        <div class="arch-card">
+          <span class="arch-label">Parte 1</span>
+          <span class="arch-value" id="part1-score">0 / 10</span>
+          <span class="arch-caption" id="part1-answered">0 de 10 respondidas</span>
+        </div>
+        <div class="arch-card">
+          <span class="arch-label">Parte 2</span>
+          <span class="arch-value" id="part2-score">0 / 6</span>
+          <span class="arch-caption" id="part2-answered">0 de 6 respondidas</span>
+        </div>
+      </div>
+
+      <div class="control-bar">
+        <div class="progress-wrap">
+          <div class="progress-meta">
+            <span>Progreso</span>
+            <span id="progress-text">0 de 16 respondidas</span>
+          </div>
+          <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="16" aria-valuenow="0" id="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" id="reset-top-btn" onclick="resetExercise()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+          <span>Reiniciar</span>
+        </button>
+      </div>
+    </section>
+
+    <div class="ornament-rule" aria-hidden="true">◆</div>
+
+    <section class="part-section" aria-labelledby="heading-parte-1">
+      <div class="part-header">
+        <h2 class="part-title" id="heading-parte-1">Parte 1</h2>
+        <span class="badge-emerald" id="part1-badge">0 / 10 aciertos</span>
+      </div>
+      <div class="items-list" id="part1-list"></div>
+    </section>
+
+    <div class="ornament-rule" aria-hidden="true">◆</div>
+
+    <section class="part-section" aria-labelledby="heading-parte-2">
+      <div class="part-header">
+        <h2 class="part-title" id="heading-parte-2">Parte 2</h2>
+        <span class="badge-emerald" id="part2-badge">0 / 6 aciertos</span>
+      </div>
+      <div class="items-list" id="part2-list"></div>
+    </section>
+
+    <section class="bottom-summary" aria-live="polite">
+      <div class="bottom-summary-text">
+        <h2 class="bottom-summary-title" id="bottom-title">Resultado actual: 0 / 16</h2>
+        <p class="bottom-summary-sub" id="bottom-sub">0 de 16 oraciones respondidas.</p>
+      </div>
+      <button type="button" class="btn btn-primary" id="reset-bottom-btn" onclick="resetExercise()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+          <path d="M3 3v5h5"></path>
+        </svg>
+        <span>Reiniciar ejercicio</span>
+      </button>
+    </section>
+  </main>
+
+  <api-shim></api-shim>
+  <script>
+    const EXERCISE_DATA = [
+      {
+        part: 1,
+        items: [
+          {
+            id: `p1-1`,
+            num: 1,
+            before: `¿`,
+            after: ` a mi amigo Juan?`,
+            options: [`sabes`, `conoces`, `conozco`, `sé`],
+            answer: `conoces`
+          },
+          {
+            id: `p1-2`,
+            num: 2,
+            before: `Mi padre `,
+            after: ` pescar.`,
+            options: [`conocen`, `sé`, `conoce`, `sabe`],
+            answer: `sabe`
+          },
+          {
+            id: `p1-3`,
+            num: 3,
+            before: `¿Juanita `,
+            after: ` dibujar?`,
+            options: [`conocen`, `conoce`, `saben`, `sabe`],
+            answer: `sabe`
+          },
+          {
+            id: `p1-4`,
+            num: 4,
+            before: `Yo `,
+            after: ` a Silvia.`,
+            options: [`sé`, `conoce`, `sabe`, `conozco`],
+            answer: `conozco`
+          },
+          {
+            id: `p1-5`,
+            num: 5,
+            before: `Ellos `,
+            after: ` París.`,
+            options: [`saben`, `conoce`, `conocen`, `sé`],
+            answer: `conocen`
+          },
+          {
+            id: `p1-6`,
+            num: 6,
+            before: `¿`,
+            after: ` quién es él?`,
+            options: [`conoces`, `conoce`, `sabes`, `sabe`],
+            answer: `sabes`
+          },
+          {
+            id: `p1-7`,
+            num: 7,
+            before: `Vosotros no `,
+            after: ` nadar.`,
+            options: [`conocemos`, `sabemos`, `sabéis`, `conocéis`],
+            answer: `sabéis`
+          },
+          {
+            id: `p1-8`,
+            num: 8,
+            before: `Yo `,
+            after: ` la respuesta.`,
+            options: [`conozco`, `sé`, `sabe`, `conoce`],
+            answer: `sé`
+          },
+          {
+            id: `p1-9`,
+            num: 9,
+            before: `Ellos `,
+            after: ` a la profesora.`,
+            options: [`sabe`, `conocen`, `saben`, `conoce`],
+            answer: `conocen`
+          },
+          {
+            id: `p1-10`,
+            num: 10,
+            before: `Nosotros `,
+            after: ` hablar español.`,
+            options: [`sabemos`, `sabe`, `conoce`, `conocemos`],
+            answer: `sabemos`
+          }
+        ]
+      },
+      {
+        part: 2,
+        items: [
+          {
+            id: `p2-1`,
+            num: 1,
+            before: `Vosotros no `,
+            after: ` nadar.`,
+            options: [`conocemos`, `sabemos`, `sabéis`, `conocéis`],
+            answer: `sabéis`
+          },
+          {
+            id: `p2-2`,
+            num: 2,
+            before: `Yo `,
+            after: ` la respuesta.`,
+            options: [`conozco`, `sé`, `sabe`, `conoce`],
+            answer: `sé`
+          },
+          {
+            id: `p2-3`,
+            num: 3,
+            before: `Ellos `,
+            after: ` a la profesora.`,
+            options: [`sabe`, `conocen`, `saben`, `conoce`],
+            answer: `conocen`
+          },
+          {
+            id: `p2-4`,
+            num: 4,
+            before: `Nosotros `,
+            after: ` hablar español.`,
+            options: [`sabemos`, `sabe`, `conoce`, `conocemos`],
+            answer: `sabemos`
+          },
+          {
+            id: `p2-5`,
+            num: 5,
+            before: `¿Quién `,
+            after: ` a Lidia?`,
+            options: [`sabe`, `conoce`, `conozco`, `sé`],
+            answer: `conoce`
+          },
+          {
+            id: `p2-6`,
+            num: 6,
+            before: `Tomás `,
+            after: ` tocar el piano.`,
+            options: [`sabemos`, `sabe`, `conocemos`, `conoce`],
+            answer: `sabe`
+          }
+        ]
+      }
+    ];
+
+    const appState = {
+      answers: {}
+    };
+
+    function findItemById(itemId) {
+      for (let i = 0; i < EXERCISE_DATA.length; i += 1) {
+        const group = EXERCISE_DATA[i];
+        for (let j = 0; j < group.items.length; j += 1) {
+          if (group.items[j].id === itemId) {
+            return group.items[j];
+          }
+        }
+      }
+      return null;
+    }
+
+    function createCheckIconSvg() {
+      const svg = document.createElementNS(`http://www.w3.org/2000/svg`, `svg`);
+      svg.setAttribute(`width`, `14`);
+      svg.setAttribute(`height`, `14`);
+      svg.setAttribute(`viewBox`, `0 0 24 24`);
+      svg.setAttribute(`fill`, `none`);
+      svg.setAttribute(`stroke`, `currentColor`);
+      svg.setAttribute(`stroke-width`, `2.5`);
+      svg.setAttribute(`stroke-linecap`, `round`);
+      svg.setAttribute(`stroke-linejoin`, `round`);
+      svg.setAttribute(`aria-hidden`, `true`);
+      const poly = document.createElementNS(`http://www.w3.org/2000/svg`, `polyline`);
+      poly.setAttribute(`points`, `20 6 9 17 4 12`);
+      svg.appendChild(poly);
+      return svg;
+    }
+
+    function createCrossIconSvg() {
+      const svg = document.createElementNS(`http://www.w3.org/2000/svg`, `svg`);
+      svg.setAttribute(`width`, `14`);
+      svg.setAttribute(`height`, `14`);
+      svg.setAttribute(`viewBox`, `0 0 24 24`);
+      svg.setAttribute(`fill`, `none`);
+      svg.setAttribute(`stroke`, `currentColor`);
+      svg.setAttribute(`stroke-width`, `2.5`);
+      svg.setAttribute(`stroke-linecap`, `round`);
+      svg.setAttribute(`stroke-linejoin`, `round`);
+      svg.setAttribute(`aria-hidden`, `true`);
+      const line1 = document.createElementNS(`http://www.w3.org/2000/svg`, `line`);
+      line1.setAttribute(`x1`, `18`);
+      line1.setAttribute(`y1`, `6`);
+      line1.setAttribute(`x2`, `6`);
+      line1.setAttribute(`y2`, `18`);
+      const line2 = document.createElementNS(`http://www.w3.org/2000/svg`, `line`);
+      line2.setAttribute(`x1`, `6`);
+      line2.setAttribute(`y1`, `6`);
+      line2.setAttribute(`x2`, `18`);
+      line2.setAttribute(`y2`, `18`);
+      svg.appendChild(line1);
+      svg.appendChild(line2);
+      return svg;
+    }
+
+    function renderExerciseLists() {
+      const part1Container = document.getElementById(`part1-list`);
+      const part2Container = document.getElementById(`part2-list`);
+      const targets = {
+        1: part1Container,
+        2: part2Container
+      };
+
+      for (let i = 0; i < EXERCISE_DATA.length; i += 1) {
+        const group = EXERCISE_DATA[i];
+        const container = targets[group.part];
+        if (!container) continue;
+        container.textContent = ``;
+
+        for (let j = 0; j < group.items.length; j += 1) {
+          const item = group.items[j];
+          const wrapper = document.createElement(`div`);
+          wrapper.className = `item-wrapper`;
+
+          const card = document.createElement(`article`);
+          card.className = `question-card`;
+          card.id = `card-${item.id}`;
+
+          const topRow = document.createElement(`div`);
+          topRow.className = `question-top`;
+
+          const prompt = document.createElement(`p`);
+          prompt.className = `question-prompt`;
+
+          const numSpan = document.createElement(`span`);
+          numSpan.className = `item-number`;
+          numSpan.textContent = `${item.num}.`;
+
+          const sentenceSpan = document.createElement(`span`);
+          sentenceSpan.appendChild(document.createTextNode(item.before));
+
+          const blankSpan = document.createElement(`span`);
+          blankSpan.className = `blank-slot`;
+          blankSpan.id = `blank-${item.id}`;
+          blankSpan.textContent = `_____`;
+
+          sentenceSpan.appendChild(blankSpan);
+          sentenceSpan.appendChild(document.createTextNode(item.after));
+
+          prompt.appendChild(numSpan);
+          prompt.appendChild(sentenceSpan);
+
+          const statusPill = document.createElement(`span`);
+          statusPill.className = `status-pill is-hidden`;
+          statusPill.id = `status-${item.id}`;
+          statusPill.setAttribute(`aria-live`, `polite`);
+
+          topRow.appendChild(prompt);
+          topRow.appendChild(statusPill);
+
+          const optionsGrid = document.createElement(`div`);
+          optionsGrid.className = `options-grid`;
+          optionsGrid.setAttribute(`role`, `group`);
+          optionsGrid.setAttribute(`aria-label`, `Opciones para la oración ${item.num}`);
+
+          for (let k = 0; k < item.options.length; k += 1) {
+            const optionWord = item.options[k];
+            const btn = document.createElement(`button`);
+            btn.type = `button`;
+            btn.className = `option-btn`;
+            btn.dataset.itemId = item.id;
+            btn.dataset.option = optionWord;
+            btn.setAttribute(`aria-pressed`, `false`);
+            btn.textContent = optionWord;
+            btn.onclick = function () {
+              selectOption(item.id, optionWord);
+            };
+            optionsGrid.appendChild(btn);
+          }
+
+          card.appendChild(topRow);
+          card.appendChild(optionsGrid);
+          wrapper.appendChild(card);
+          container.appendChild(wrapper);
+        }
+      }
+    }
+
+    function updateItemUI(item) {
+      const card = document.getElementById(`card-${item.id}`);
+      const blank = document.getElementById(`blank-${item.id}`);
+      const statusPill = document.getElementById(`status-${item.id}`);
+      if (!card || !blank || !statusPill) return;
+
+      const chosen = appState.answers[item.id];
+      const buttons = card.querySelectorAll(`.option-btn`);
+
+      card.classList.remove(`is-correct`, `is-incorrect`);
+      blank.classList.remove(`filled-correct`, `filled-incorrect`);
+      statusPill.classList.remove(`is-correct`, `is-incorrect`, `is-hidden`);
+      statusPill.textContent = ``;
+
+      for (let i = 0; i < buttons.length; i += 1) {
+        const b = buttons[i];
+        b.classList.remove(`selected-correct`, `selected-incorrect`);
+        b.setAttribute(`aria-pressed`, `false`);
+      }
+
+      if (!chosen) {
+        blank.textContent = `_____`;
+        statusPill.classList.add(`is-hidden`);
+        return;
+      }
+
+      const isCorrect = chosen === item.answer;
+      blank.textContent = chosen;
+
+      if (isCorrect) {
+        card.classList.add(`is-correct`);
+        blank.classList.add(`filled-correct`);
+        statusPill.classList.add(`is-correct`);
+        statusPill.appendChild(createCheckIconSvg());
+        statusPill.appendChild(document.createTextNode(`Correcto`));
+      } else {
+        card.classList.add(`is-incorrect`);
+        blank.classList.add(`filled-incorrect`);
+        statusPill.classList.add(`is-incorrect`);
+        statusPill.appendChild(createCrossIconSvg());
+        statusPill.appendChild(document.createTextNode(`Incorrecto`));
+      }
+
+      for (let i = 0; i < buttons.length; i += 1) {
+        const b = buttons[i];
+        if (b.dataset.option === chosen) {
+          b.setAttribute(`aria-pressed`, `true`);
+          b.classList.add(isCorrect ? `selected-correct` : `selected-incorrect`);
+        }
+      }
+    }
+
+    function updateScoreUI() {
+      let part1Correct = 0;
+      let part1Answered = 0;
+      let part2Correct = 0;
+      let part2Answered = 0;
+
+      for (let i = 0; i < EXERCISE_DATA[0].items.length; i += 1) {
+        const item = EXERCISE_DATA[0].items[i];
+        const chosen = appState.answers[item.id];
+        if (chosen) {
+          part1Answered += 1;
+          if (chosen === item.answer) part1Correct += 1;
+        }
+      }
+
+      for (let i = 0; i < EXERCISE_DATA[1].items.length; i += 1) {
+        const item = EXERCISE_DATA[1].items[i];
+        const chosen = appState.answers[item.id];
+        if (chosen) {
+          part2Answered += 1;
+          if (chosen === item.answer) part2Correct += 1;
+        }
+      }
+
+      const totalCorrect = part1Correct + part2Correct;
+      const totalAnswered = part1Answered + part2Answered;
+      const totalItems = 16;
+      const pct = Math.round((totalCorrect / totalItems) * 100);
+      const progressPct = Math.round((totalAnswered / totalItems) * 100);
+
+      const totalScoreEl = document.getElementById(`total-score`);
+      const totalPercentEl = document.getElementById(`total-percent`);
+      const part1ScoreEl = document.getElementById(`part1-score`);
+      const part1AnsweredEl = document.getElementById(`part1-answered`);
+      const part2ScoreEl = document.getElementById(`part2-score`);
+      const part2AnsweredEl = document.getElementById(`part2-answered`);
+      const part1BadgeEl = document.getElementById(`part1-badge`);
+      const part2BadgeEl = document.getElementById(`part2-badge`);
+      const progressTextEl = document.getElementById(`progress-text`);
+      const progressBarEl = document.getElementById(`progress-bar`);
+      const progressFillEl = document.getElementById(`progress-fill`);
+      const bottomTitleEl = document.getElementById(`bottom-title`);
+      const bottomSubEl = document.getElementById(`bottom-sub`);
+      const resetTopBtn = document.getElementById(`reset-top-btn`);
+      const resetBottomBtn = document.getElementById(`reset-bottom-btn`);
+
+      if (totalScoreEl) totalScoreEl.textContent = `${totalCorrect} / ${totalItems}`;
+      if (totalPercentEl) totalPercentEl.textContent = `${pct} % de aciertos`;
+      if (part1ScoreEl) part1ScoreEl.textContent = `${part1Correct} / 10`;
+      if (part1AnsweredEl) part1AnsweredEl.textContent = `${part1Answered} de 10 respondidas`;
+      if (part2ScoreEl) part2ScoreEl.textContent = `${part2Correct} / 6`;
+      if (part2AnsweredEl) part2AnsweredEl.textContent = `${part2Answered} de 6 respondidas`;
+      if (part1BadgeEl) part1BadgeEl.textContent = `${part1Correct} / 10 aciertos`;
+      if (part2BadgeEl) part2BadgeEl.textContent = `${part2Correct} / 6 aciertos`;
+
+      if (progressTextEl) progressTextEl.textContent = `${totalAnswered} de ${totalItems} respondidas`;
+      if (progressBarEl) progressBarEl.setAttribute(`aria-valuenow`, String(totalAnswered));
+      if (progressFillEl) progressFillEl.style.width = `${progressPct}%`;
+
+      if (bottomTitleEl) {
+        if (totalAnswered === totalItems && totalCorrect === totalItems) {
+          bottomTitleEl.textContent = `¡Ejercicio completado! ${totalCorrect} / ${totalItems}`;
+        } else {
+          bottomTitleEl.textContent = `Resultado actual: ${totalCorrect} / ${totalItems}`;
+        }
+      }
+      if (bottomSubEl) {
+        if (totalAnswered === totalItems && totalCorrect === totalItems) {
+          bottomSubEl.textContent = `Todas las oraciones son correctas.`;
+        } else {
+          bottomSubEl.textContent = `${totalAnswered} de ${totalItems} oraciones respondidas.`;
+        }
+      }
+
+      const nothingAnswered = totalAnswered === 0;
+      if (resetTopBtn) resetTopBtn.disabled = nothingAnswered;
+      if (resetBottomBtn) resetBottomBtn.disabled = nothingAnswered;
+    }
+
+    function refreshAllUI() {
+      for (let i = 0; i < EXERCISE_DATA.length; i += 1) {
+        const group = EXERCISE_DATA[i];
+        for (let j = 0; j < group.items.length; j += 1) {
+          updateItemUI(group.items[j]);
+        }
+      }
+      updateScoreUI();
+    }
+
+    async function persistState() {
+      if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
+        try {
+          await window.notebookAppApi.setAppState({ answers: appState.answers });
+        } catch (err) {
+          /* Ignore persistence errors in standalone preview */
+        }
+      }
+    }
+
+    async function selectOption(itemId, optionWord) {
+      const item = findItemById(itemId);
+      if (!item) return;
+      appState.answers[itemId] = optionWord;
+      updateItemUI(item);
+      updateScoreUI();
+      await persistState();
+    }
+
+    async function resetExercise() {
+      appState.answers = {};
+      refreshAllUI();
+      await persistState();
+    }
+
+    async function initApp() {
+      renderExerciseLists();
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+        try {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved && saved.answers && typeof saved.answers === `object`) {
+            const restored = {};
+            const keys = Object.keys(saved.answers);
+            for (let i = 0; i < keys.length; i += 1) {
+              const key = keys[i];
+              const item = findItemById(key);
+              const val = saved.answers[key];
+              if (item && typeof val === `string` && item.options.indexOf(val) !== -1) {
+                restored[key] = val;
+              }
+            }
+            appState.answers = restored;
+          }
+        } catch (err) {
+          /* Start fresh if state load fails */
+        }
+      }
+
+      refreshAllUI();
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+        window.notebookAppApi.notifyAppReady();
+      }
+    }
+
+    if (document.readyState === `loading`) {
+      document.addEventListener(`DOMContentLoaded`, initApp);
+    } else {
+      initApp();
+    }
+  </script>
+</body>
+</html>
